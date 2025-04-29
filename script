@@ -1,0 +1,6 @@
+python run_gemini.py \
+    --api_key AIzaSyCr9SRnhG7vDOhbzcjGnQwkc1B1KXJl25A \
+    --data_load_name program_synthesis_data.jsonl \
+    --candidate_num 5 \
+    --result_save_name program_synthesis_run_palm.jsonl \
+    --log_file_name program_synthesis_run_palm.log
