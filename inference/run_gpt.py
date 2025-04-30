@@ -9,18 +9,19 @@ import argparse
 from pathlib import Path
 from datasets import load_dataset, Dataset
 
+import os
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--api_key', default='', type=str)
     parser.add_argument('--model', default='gpt-3.5-turbo',
                         choices=['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo-16k-0613',
                                  'gpt-3.5-turbo-0301', 'gpt-4', 'gpt-4-0613', 'gpt-4-32k', 'gpt-4-32k-0613',
                                  'gpt-4-0314', 'gpt-4-32k-0314'],
                         type=str)
     parser.add_argument('--data_load_name', default='program_synthesis_data.jsonl', type=str)
-    parser.add_argument('--result_save_name', default='program_synthesis_eval_gpt3.jsonl', type=str)
-    parser.add_argument('--log_file_name', default='program_synthesis_eval_gpt3.logs', type=str)
+    parser.add_argument('--result_save_name', default='program_synthesis_gpt3.jsonl', type=str)
+    parser.add_argument('--log_file_name', default='program_synthesis_gpt3.logs', type=str)
     parser.add_argument('--temperature', default=0.5, type=float)
     parser.add_argument('--candidate_num', default=1, type=int)
     args = parser.parse_args()
@@ -197,7 +198,7 @@ if __name__ == '__main__':
     logger.addHandler(stream_handler)
 
     # References: https://platform.openai.com/docs/api-reference/authentication
-    openai.api_key = args.api_key
+    openai.api_key = os.getenv('OPENAI_API_KEY')
     model_max_tokens = {
         'gpt-3.5-turbo': 4096,
         'gpt-3.5-turbo-16k': 16385,

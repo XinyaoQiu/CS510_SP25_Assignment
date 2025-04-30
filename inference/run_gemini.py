@@ -8,16 +8,16 @@ from datasets import load_dataset, Dataset
 from google.genai import types
 import json
 from google.api_core.exceptions import GoogleAPIError
+import os
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--api_key', required=True, type=str)
     parser.add_argument('--model', default='gemini-2.0-flash', choices=['gemini-2.0-flash'], type=str)
     parser.add_argument('--data_load_name', default='program_synthesis_data.jsonl', type=str)
-    parser.add_argument('--result_save_name', default='program_synthesis_eval_gemini.jsonl', type=str)
-    parser.add_argument('--log_file_name', default='program_synthesis_eval_gemini.logs', type=str)
+    parser.add_argument('--result_save_name', default='program_synthesis_gemini.jsonl', type=str)
+    parser.add_argument('--log_file_name', default='program_synthesis_gemini.logs', type=str)
     parser.add_argument('--temperature', default=0.5, type=float)
-    parser.add_argument('--candidate_num', default=2, type=int)
+    parser.add_argument('--candidate_num', default=5, type=int)
     args = parser.parse_args()
     return args
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
 
-    client = genai.Client(api_key=args.api_key) # Initialize with API key
+    client = genai.Client(api_key=os.getenv('GEMINI_API_KEY')) # Initialize with API key
 
     candidate_num = args.candidate_num
     temperature = args.temperature
