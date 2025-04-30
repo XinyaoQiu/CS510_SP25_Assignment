@@ -23,7 +23,7 @@ def parse_arguments():
     parser.add_argument('--result_save_name', default='program_synthesis_gpt3.jsonl', type=str)
     parser.add_argument('--log_file_name', default='program_synthesis_gpt3.logs', type=str)
     parser.add_argument('--temperature', default=0.5, type=float)
-    parser.add_argument('--candidate_num', default=1, type=int)
+    parser.add_argument('--candidate_num', default=5, type=int)
     args = parser.parse_args()
 
     return args
@@ -124,7 +124,7 @@ As a professional code developer with years of experience, please provide the co
 8. support programming language version: {env_map[lang]}
 Please take care to minimize the use of complex header files.
 
-Respond should only with a string in the following JSON format:
+Respond should only with a string in the following JSON format, using Markdown code block:
 [{{"version": specific version used in the programming language, "target code":  the code you produced in the respective programming language version."}}] """
 
     logging.info('problem src_id: ' + str(prob_uid))
@@ -169,7 +169,7 @@ Respond should only with a string in the following JSON format:
 
 
 def main():
-    load_path = Path(__file__).parent.parent.parent / Path('data') / Path(args.data_load_name)
+    load_path = Path(__file__).parent.parent / Path('data') / Path(args.data_load_name)
     save_path = Path(__file__).parent / Path('results') / Path(args.result_save_name)
 
     dataset = load_dataset('json', split='train', data_files=str(load_path))

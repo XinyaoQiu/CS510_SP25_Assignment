@@ -192,13 +192,19 @@ def load_json_from_markdown(markdown_string):
     json_match = re.search(r'```json\s*([\s\S]*?)\s*```', markdown_string)
     if json_match:
         json_string = json_match.group(1).strip()
+        json_string = json_string.replace('\\""', '\\"\\"')
         try:
             return json.loads(json_string)
         except json.JSONDecodeError as e:
             print(f"JSONDecodeError: {e}")
             return None
     else:
-        return None
+        json_string = markdown_string
+        try:
+            return json.loads(json_string)[0]
+        except json.JSONDecodeError as e:
+            print(f"JSONDecodeError: {e}")
+            return None
 
 def count_passed_problems(results_path):
     """Counts the number of passed problems based on execution results."""
@@ -228,13 +234,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--basic_dir", type=str, default="./data/")
     parser.add_argument("--inference_dir", type=str, default="./inference/results/")
-    parser.add_argument("--model_name", type=str, default="gemini")
+    parser.add_argument("--model_name", type=str, default="gpt3")
     parser.add_argument("--exec_result_dir", type=str, default="./exec_results/")
     args = parser.parse_args()
 
     basic_path = os.path.join(args.basic_dir, "program_synthesis_data.jsonl")
 
-    inference_path = os.path.join(args.inference_dir, f"program_synthesis_eval_{args.model_name}.jsonl")
+    inference_path = os.path.join(args.inference_dir, f"program_synthesis_{args.model_name}.jsonl")
     exec_result_dir = args.exec_result_dir
     os.makedirs(exec_result_dir, exist_ok=True)
     # refine_and_save_data(basic_path, tmp_path, inference_path, exec_result_dir)
@@ -249,7 +255,6 @@ def main():
     with open(inference_path, "r", encoding="utf-8") as f:
         for line in f:
             inference_data.append(json.loads(line))
-
 
     with open(results_path, "w", encoding="utf-8") as results_file:
         for item in inference_data:
